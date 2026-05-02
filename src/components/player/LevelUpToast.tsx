@@ -16,11 +16,13 @@ interface LevelUpToastProps {
  * Animated toast notification for XP gains and level-ups.
  */
 export function LevelUpToast({ newLevel, xpGain, leveledUp, onClose }: LevelUpToastProps) {
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     timerRef.current = setTimeout(onClose, 5000);
-    return () => clearTimeout(timerRef.current);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [onClose]);
 
   return (
