@@ -41,39 +41,47 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   // Load from localStorage or Supabase
   useEffect(() => {
     async function loadUser() {
+      // 1. Optimistic load from localStorage immediately
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user || null);
-
-        if (session?.user) {
-          // Fetch stats from Supabase
-          const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-
-          if (data && !error) {
-            setStats({
-              level: data.level || 1,
-              xp: data.xp || 0,
-              coins: data.coins || 0,
-              gamesPlayed: data.gamesPlayed || 0,
-              wins: data.wins || 0,
-              username: session.user.user_metadata?.custom_claims?.global_name || session.user.email?.split("@")[0] || "Player",
-            });
-            return;
-          }
-        }
-        
-        // Fallback to localStorage
         const localStats = localStorage.getItem("aura_chess_stats");
         if (localStats) {
           setStats(JSON.parse(localStats));
         }
+      } catch (e) {
+        console.error("Failed to parse local stats", e);
+      }
 
+      // 2. Try Supabase
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        // Network errors or mock URLs might fail silently via error object instead of throw
+        if (sessionError || !session) {
+          setUser(null);
+          return; // Already loaded local stats
+        }
+
+        setUser(session.user);
+
+        // Fetch stats from Supabase
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        if (data && !error) {
+          setStats({
+            level: data.level || 1,
+            xp: data.xp || 0,
+            coins: data.coins || 0,
+            gamesPlayed: data.gamesPlayed || 0,
+            wins: data.wins || 0,
+            username: session.user.user_metadata?.custom_claims?.global_name || session.user.email?.split("@")[0] || "Player",
+          });
+        }
       } catch (err) {
-        console.error("Error loading user:", err);
+        console.warn("Supabase auth check failed (using mock keys or offline):", err);
       } finally {
         setLoading(false);
       }
@@ -82,18 +90,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     loadUser();
 
     // Listen for auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      if (event === "SIGNED_IN") {
-        loadUser();
-      } else if (event === "SIGNED_OUT") {
-        const localStats = localStorage.getItem("aura_chess_stats");
-        setStats(localStats ? JSON.parse(localStats) : DEFAULT_STATS);
-      }
-    });
+    let authListener: any = null;
+    try {
+      const { data } = supabase.auth.onAuthStateChange((event, session) => {
+        setUser(session?.user || null);
+        if (event === "SIGNED_IN") {
+          loadUser();
+        } else if (event === "SIGNED_OUT") {
+          const localStats = localStorage.getItem("aura_chess_stats");
+          setStats(localStats ? JSON.parse(localStats) : DEFAULT_STATS);
+        }
+      });
+      authListener = data;
+    } catch (e) {
+      console.warn("Supabase auth listener disabled.");
+    }
 
     return () => {
-      authListener.subscription.unsubscribe();
+      if (authListener?.subscription) {
+        authListener.subscription.unsubscribe();
+      }
     };
   }, []);
 
