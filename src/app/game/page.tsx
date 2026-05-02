@@ -12,6 +12,7 @@ import { AnalysisResult, GameResult, XPGain } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Cpu, Users, ChevronLeft, FlaskConical } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/context/UserContext";
 
 type GameMode = "vs-ai" | "vs-human";
 type ViewMode = "setup" | "game" | "analysis";
@@ -26,23 +27,15 @@ export default function GamePage() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [xpToast, setXpToast] = useState<{ xpGain: XPGain; newLevel: number; leveledUp: boolean } | null>(null);
 
-  // Local player state (persists during session, saved to Supabase if configured)
-  const [playerState, setPlayerState] = useState({
-    level: 1,
-    xp: 0,
-    coins: 0,
-    gamesPlayed: 0,
-    wins: 0,
-  });
-
-  const { isReady, isAnalyzing, analyzePGN } = useStockfish();
+  const { isReady, isAnalyzing, analyzePGN, getBestMove } = useStockfish();
+  const { stats, updateStats } = useUser();
 
   const playerStats = buildPlayerStats(
-    playerState.level,
-    playerState.xp,
-    playerState.coins,
-    playerState.gamesPlayed,
-    playerState.wins
+    stats.level,
+    stats.xp,
+    stats.coins,
+    stats.gamesPlayed,
+    stats.wins
   );
 
   /**
@@ -62,23 +55,23 @@ export default function GamePage() {
         // Calculate and apply XP
         const gain = calculateXPGain(won, analysisResult.accuracy, analysisResult.blunders.length);
         const { newXp, newLevel, leveledUp } = applyXPGain(
-          playerState.xp,
-          playerState.level,
+          stats.xp,
+          stats.level,
           gain.total
         );
 
-        setPlayerState((prev) => ({
+        updateStats({
           level: newLevel,
           xp: newXp,
-          coins: prev.coins + Math.floor(gain.total / 5),
-          gamesPlayed: prev.gamesPlayed + 1,
-          wins: won ? prev.wins + 1 : prev.wins,
-        }));
+          coins: stats.coins + Math.floor(gain.total / 5),
+          gamesPlayed: stats.gamesPlayed + 1,
+          wins: won ? stats.wins + 1 : stats.wins,
+        });
 
         setXpToast({ xpGain: gain, newLevel, leveledUp });
       }
     },
-    [analyzePGN, playerState]
+    [analyzePGN, stats, updateStats]
   );
 
   const handlePlayAgain = () => {
@@ -93,12 +86,7 @@ export default function GamePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        level={playerStats.level}
-        xp={playerStats.xp}
-        xpToNextLevel={playerStats.xpToNextLevel}
-        username="Strategist"
-      />
+      <Navbar />
 
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* ── Setup Screen ── */}
@@ -144,6 +132,7 @@ export default function GamePage() {
               <ChessBoardComponent
                 onGameEnd={handleGameEnd}
                 playAgainstAI={gameMode === "vs-ai"}
+                engineMoveFetcher={getBestMove}
               />
             </div>
 

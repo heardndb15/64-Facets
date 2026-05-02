@@ -21,7 +21,10 @@ const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
  * Core hook managing chess game state.
  * Handles move validation, game-over detection, and simple AI opponent.
  */
-export function useChessGame(playAgainstAI: boolean = false): UseChessGameReturn {
+export function useChessGame(
+  playAgainstAI: boolean = false,
+  engineMoveFetcher?: (fen: string, depth?: number) => Promise<string | null>
+): UseChessGameReturn {
   const chessRef = useRef(new Chess());
   const [gameState, setGameState] = useState<GameState>({
     fen: INITIAL_FEN,
@@ -86,16 +89,28 @@ export function useChessGame(playAgainstAI: boolean = false): UseChessGameReturn
   );
 
   /**
-   * Simple random-move AI for playing against.
+   * Simple random-move AI for playing against, or Stockfish if engine is provided.
    */
-  const makeAIMove = useCallback(() => {
+  const makeAIMove = useCallback(async () => {
     const chess = chessRef.current;
     if (chess.isGameOver() || chess.turn() !== "b") return;
 
+    if (engineMoveFetcher) {
+      const bestMove = await engineMoveFetcher(chess.fen(), 10);
+      if (bestMove) {
+        // Stockfish returns format like e2e4 or e7e8q
+        const from = bestMove.slice(0, 2);
+        const to = bestMove.slice(2, 4);
+        const promotion = bestMove.length > 4 ? bestMove[4] : undefined;
+        makeMove(from, to, promotion);
+        return;
+      }
+    }
+
+    // Fallback to random move
     const moves = chess.moves({ verbose: true });
     if (moves.length === 0) return;
 
-    // Simple heuristic: prefer captures and checks
     const captures = moves.filter((m) => m.captured);
     const pool = captures.length > 0 && Math.random() > 0.3 ? captures : moves;
     const randomMove = pool[Math.floor(Math.random() * pool.length)];
@@ -104,7 +119,7 @@ export function useChessGame(playAgainstAI: boolean = false): UseChessGameReturn
       chess.move(randomMove);
       syncState();
     }, 400 + Math.random() * 600);
-  }, [syncState]);
+  }, [syncState, engineMoveFetcher, makeMove]);
 
   /**
    * Highlight legal moves for a selected square.

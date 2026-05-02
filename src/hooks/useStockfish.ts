@@ -10,6 +10,7 @@ interface UseStockfishReturn {
   isAnalyzing: boolean;
   analyzePGN: (pgn: string) => Promise<AnalysisResult | null>;
   currentEval: number | null;
+  getBestMove: (fen: string, depth?: number) => Promise<string | null>;
 }
 
 /**
@@ -24,6 +25,7 @@ export function useStockfish(): UseStockfishReturn {
 
   // Resolve queue for sequential position analysis
   const resolveRef = useRef<((value: number) => void) | null>(null);
+  const resolveMoveRef = useRef<((value: string) => void) | null>(null);
 
   useEffect(() => {
     // Try to load stockfish from public directory
@@ -33,8 +35,16 @@ export function useStockfish(): UseStockfishReturn {
       worker.onmessage = (e: MessageEvent) => {
         const line: string = e.data;
 
+        // Extract bestmove from bestmove line
+        if (line.startsWith("bestmove")) {
+          const match = line.match(/bestmove\s+(\S+)/);
+          if (match && resolveMoveRef.current) {
+            resolveMoveRef.current(match[1]);
+            resolveMoveRef.current = null;
+          }
+        }
         // Extract evaluation from info lines
-        if (line.startsWith("info") && line.includes("score cp")) {
+        else if (line.startsWith("info") && line.includes("score cp")) {
           const match = line.match(/score cp (-?\d+)/);
           if (match) {
             const cp = parseInt(match[1], 10);
@@ -173,5 +183,30 @@ export function useStockfish(): UseStockfishReturn {
     [evaluatePosition]
   );
 
-  return { isReady, isAnalyzing, analyzePGN, currentEval };
+  /**
+   * Get the best move for a given FEN from Stockfish.
+   */
+  const getBestMove = useCallback(
+    (fen: string, depth = 10): Promise<string | null> => {
+      if (!workerRef.current) return Promise.resolve(null);
+
+      return new Promise((resolve) => {
+        resolveMoveRef.current = resolve;
+        workerRef.current!.postMessage("stop");
+        workerRef.current!.postMessage(`position fen ${fen}`);
+        workerRef.current!.postMessage(`go depth ${depth}`);
+        
+        // Timeout just in case
+        setTimeout(() => {
+          if (resolveMoveRef.current === resolve) {
+            resolve(null);
+            resolveMoveRef.current = null;
+          }
+        }, 5000);
+      });
+    },
+    []
+  );
+
+  return { isReady, isAnalyzing, analyzePGN, currentEval, getBestMove };
 }

@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { UserProvider } from "@/context/UserContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +27,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased min-h-screen bg-aura-bg text-white">
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

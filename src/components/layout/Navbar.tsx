@@ -8,23 +8,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-interface NavbarProps {
-  level?: number;
-  xp?: number;
-  xpToNextLevel?: number;
-  username?: string;
-}
+import { useUser } from "@/context/UserContext";
 
-/**
- * Top navigation bar with player level, XP, and garden stage.
- */
-export function Navbar({
-  level = 1,
-  xp = 0,
-  xpToNextLevel = 100,
-  username = "Strategist",
-}: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
+  const { stats, user, loginWithGithub, logout } = useUser();
+  const { level, xp, username } = stats;
+  // Fallback next level calc for navbar display
+  const xpToNextLevel = level * 100;
 
   const navLinks = [
     { href: "/game", label: "Play", icon: Sword },
@@ -63,7 +54,7 @@ export function Navbar({
             ))}
           </div>
 
-          {/* Player stats */}
+          {/* Player stats & Auth */}
           <div className="flex items-center gap-3">
             {/* XP mini bar */}
             <div className="hidden md:flex flex-col gap-1 w-28">
@@ -84,6 +75,20 @@ export function Navbar({
               <GardenMini level={level} />
               <span className="text-sm font-medium text-white hidden sm:block">{username}</span>
             </div>
+
+            {/* Auth Button */}
+            {user ? (
+              <button onClick={logout} className="text-xs ml-2 text-gray-400 hover:text-white">
+                Log Out
+              </button>
+            ) : (
+              <button 
+                onClick={loginWithGithub} 
+                className="text-xs ml-2 bg-garden-500 hover:bg-garden-400 text-white px-2 py-1 rounded"
+              >
+                Log In
+              </button>
+            )}
           </div>
         </div>
       </div>

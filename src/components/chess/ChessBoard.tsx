@@ -21,13 +21,14 @@ import { cn } from "@/lib/utils";
 interface ChessBoardProps {
   onGameEnd: (pgn: string, result: GameResult) => void;
   playAgainstAI?: boolean;
+  engineMoveFetcher?: (fen: string, depth?: number) => Promise<string | null>;
 }
 
 /**
  * Interactive chess board component.
  * Wraps react-chessboard with our game hook, move history, and controls.
  */
-export function ChessBoardComponent({ onGameEnd, playAgainstAI = false }: ChessBoardProps) {
+export function ChessBoardComponent({ onGameEnd, playAgainstAI = false, engineMoveFetcher }: ChessBoardProps) {
   const {
     gameState,
     makeMove,
@@ -36,7 +37,7 @@ export function ChessBoardComponent({ onGameEnd, playAgainstAI = false }: ChessB
     highlightedSquares,
     onSquareClick,
     selectedSquare,
-  } = useChessGame(playAgainstAI);
+  } = useChessGame(playAgainstAI, engineMoveFetcher);
 
   const [hasNotifiedEnd, setHasNotifiedEnd] = useState(false);
 
@@ -102,6 +103,7 @@ export function ChessBoardComponent({ onGameEnd, playAgainstAI = false }: ChessB
             position={gameState.fen}
             onPieceDrop={(from, to) => makeMove(from, to)}
             onSquareClick={onSquareClick}
+            boardOrientation={playAgainstAI ? "white" : (gameState.turn === "w" ? "white" : "black")}
             customSquareStyles={highlightedSquares}
             customBoardStyle={{
               borderRadius: "12px",

@@ -20,20 +20,14 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-// Demo stats for MVP (replace with Supabase data in production)
-const DEMO_STATS = {
-  level: 5,
-  xp: 340,
-  coins: 72,
-  gamesPlayed: 12,
-  wins: 7,
-  username: "Strategist",
-};
+import { useUser } from "@/context/UserContext";
 
 const MILESTONE_LEVELS = [1, 3, 5, 8, 10, 15, 20];
 
 export default function DashboardPage() {
-  const { level, xp, coins, gamesPlayed, wins, username } = DEMO_STATS;
+  const { stats, updateStats, user, loginWithGoogle } = useUser();
+  const { level, xp, coins, gamesPlayed, wins, username } = stats;
+  
   const xpNeeded = xpForLevel(level);
   const stage = getGardenStage(level);
   const stageInfo = gardenStageInfo[stage];
@@ -41,7 +35,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar level={level} xp={xp} xpToNextLevel={xpNeeded} username={username} />
+      <Navbar />
 
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* ── Header row ── */}

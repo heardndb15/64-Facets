@@ -26,7 +26,7 @@ const XP_NEEDED = 317;
 export default function HistoryPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar level={LEVEL} xp={XP} xpToNextLevel={XP_NEEDED} username="Strategist" />
+      <Navbar />
 
       <div className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Header */}
