@@ -11,14 +11,16 @@ import { cn } from "@/lib/utils";
 
 import { useUser } from "@/context/UserContext";
 import { ProModal } from "@/components/ui/pro-modal";
+import { AuthModal } from "@/components/ui/auth-modal";
 
 export function Navbar() {
   const pathname = usePathname();
-  const { stats, user, loginWithGithub, logout } = useUser();
+  const { stats, user, logout } = useUser();
   const { level, xp, username } = stats;
   // Fallback next level calc for navbar display
   const xpToNextLevel = level * 100;
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const navLinks = [
@@ -104,7 +106,7 @@ export function Navbar() {
               </button>
             ) : (
               <button 
-                onClick={loginWithGithub} 
+                onClick={() => setIsAuthModalOpen(true)} 
                 className="text-xs ml-2 bg-garden-500 hover:bg-garden-400 text-white px-2 py-1 rounded transition-colors"
               >
                 Войти
@@ -114,6 +116,7 @@ export function Navbar() {
         </div>
       </div>
       <ProModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </nav>
   );
 }

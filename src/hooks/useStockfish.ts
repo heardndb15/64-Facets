@@ -72,9 +72,22 @@ export function useStockfish(): UseStockfishReturn {
         }
       };
 
+      worker.onerror = (err) => {
+        console.error("Stockfish worker error:", err);
+        setIsReady(true); // Use fallback on error
+      };
+
       worker.postMessage("uci");
       worker.postMessage("isready");
       workerRef.current = worker;
+
+      // Fail-safe timeout if worker hangs or CSP blocks it silently
+      setTimeout(() => {
+        setIsReady((prev) => {
+          if (!prev) console.warn("Stockfish initialization timed out. Using mock.");
+          return true;
+        });
+      }, 3000);
     } catch {
       // Stockfish unavailable — set ready with fallback
       console.warn("Stockfish worker not available. Using mock analysis.");
@@ -101,6 +114,15 @@ export function useStockfish(): UseStockfishReturn {
         workerRef.current!.postMessage("stop");
         workerRef.current!.postMessage(`position fen ${fen}`);
         workerRef.current!.postMessage(`go depth ${depth}`);
+        
+        // Timeout fallback for evaluation
+        setTimeout(() => {
+          if (resolveRef.current === resolve) {
+            resolveRef.current = null;
+            // Fallback mock value
+            resolve(Math.floor(Math.random() * 200 - 100));
+          }
+        }, 2000);
       });
     },
     []

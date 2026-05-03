@@ -26,8 +26,8 @@ interface UserContextValue {
   updateStats: (updates: Partial<UserStats>) => void;
   user: any; // Supabase user
   loading: boolean;
-  loginWithGithub: () => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginLocal: (email: string, pass: string) => Promise<void>;
+  registerLocal: (email: string, pass: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -51,8 +51,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to parse local stats", e);
       }
 
-      if (localStorage.getItem("mock_user_logged_in") === "true") {
-        setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
+      const loggedEmail = localStorage.getItem("mock_user_logged_in");
+      if (loggedEmail) {
+        const users = JSON.parse(localStorage.getItem("aura_users") || "{}");
+        const fullName = users[loggedEmail]?.fullName || loggedEmail.split("@")[0];
+        setUser({ id: loggedEmail, email: loggedEmail, user_metadata: { full_name: fullName } });
       } else {
         setUser(null);
       }
@@ -75,14 +78,27 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   };
 
-  const loginWithGithub = async () => {
-    setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
-    localStorage.setItem("mock_user_logged_in", "true");
+  const registerLocal = async (email: string, pass: string) => {
+    const existing = JSON.parse(localStorage.getItem("aura_users") || "{}");
+    if (existing[email]) {
+      throw new Error("Пользователь с таким email уже существует");
+    }
+    const fullName = email.split("@")[0];
+    existing[email] = { password: pass, fullName };
+    localStorage.setItem("aura_users", JSON.stringify(existing));
+    
+    setUser({ id: email, email, user_metadata: { full_name: fullName } });
+    localStorage.setItem("mock_user_logged_in", email);
   };
 
-  const loginWithGoogle = async () => {
-    setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
-    localStorage.setItem("mock_user_logged_in", "true");
+  const loginLocal = async (email: string, pass: string) => {
+    const existing = JSON.parse(localStorage.getItem("aura_users") || "{}");
+    const foundUser = existing[email];
+    if (!foundUser || foundUser.password !== pass) {
+      throw new Error("Неверный email или пароль");
+    }
+    setUser({ id: email, email, user_metadata: { full_name: foundUser.fullName } });
+    localStorage.setItem("mock_user_logged_in", email);
   };
 
   const logout = async () => {
@@ -91,7 +107,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ stats, updateStats, user, loading, loginWithGithub, loginWithGoogle, logout }}>
+    <UserContext.Provider value={{ stats, updateStats, user, loading, loginLocal, registerLocal, logout }}>
       {children}
     </UserContext.Provider>
   );
