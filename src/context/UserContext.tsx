@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+// import { supabase } from "@/lib/supabase";
 
 export interface UserStats {
   level: number;
@@ -38,7 +38,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load from localStorage or Supabase
+  // Load from localStorage Only
   useEffect(() => {
     async function loadUser() {
       // 1. Optimistic load from localStorage immediately
@@ -51,74 +51,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to parse local stats", e);
       }
 
-      // 2. Try Supabase
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        // Network errors or mock URLs might fail silently via error object instead of throw
-        if (sessionError || !session) {
-          setUser(null);
-          return; // Already loaded local stats
-        }
-
-        setUser(session.user);
-
-        // Fetch stats from Supabase
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-
-        if (data && !error) {
-          const meta = session.user.user_metadata;
-          const extractedUsername = 
-            meta?.full_name || 
-            meta?.name || 
-            meta?.user_name || 
-            session.user.email?.split("@")[0] || 
-            "Player";
-
-          setStats({
-            level: data.level || 1,
-            xp: data.xp || 0,
-            coins: data.coins || 0,
-            gamesPlayed: data.gamesPlayed || 0,
-            wins: data.wins || 0,
-            username: data.username || extractedUsername,
-          });
-        }
-      } catch (err) {
-        console.warn("Supabase auth check failed (using mock keys or offline):", err);
-      } finally {
-        setLoading(false);
+      if (localStorage.getItem("mock_user_logged_in") === "true") {
+        setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
+      } else {
+        setUser(null);
       }
+      setLoading(false);
     }
 
     loadUser();
-
-    // Listen for auth changes
-    let authListener: any = null;
-    try {
-      const { data } = supabase.auth.onAuthStateChange((event, session) => {
-        setUser(session?.user || null);
-        if (event === "SIGNED_IN") {
-          loadUser();
-        } else if (event === "SIGNED_OUT") {
-          const localStats = localStorage.getItem("aura_chess_stats");
-          setStats(localStats ? JSON.parse(localStats) : DEFAULT_STATS);
-        }
-      });
-      authListener = data;
-    } catch (e) {
-      console.warn("Supabase auth listener disabled.");
-    }
-
-    return () => {
-      if (authListener?.subscription) {
-        authListener.subscription.unsubscribe();
-      }
-    };
   }, []);
 
   // Update stats (both memory, localStorage, and supabase if logged in)
@@ -132,44 +73,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       return newStats;
     });
 
-    if (user) {
-      // Sync with Supabase (fire and forget for UI responsiveness)
-      supabase
-        .from("users")
-        .upsert({ 
-          id: user.id, 
-          email: user.email,
-          updated_at: new Date().toISOString(),
-          ...updates 
-        })
-        .then(({ error }) => {
-          if (error) console.error("Error syncing to Supabase:", error);
-        });
-    }
   };
 
   const loginWithGithub = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-    await supabase.auth.signInWithOAuth({ 
-      provider: 'github',
-      options: {
-        redirectTo: `${origin}/auth/callback` || origin
-      }
-    });
+    setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
+    localStorage.setItem("mock_user_logged_in", "true");
   };
 
   const loginWithGoogle = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-    await supabase.auth.signInWithOAuth({ 
-      provider: 'google', 
-      options: {
-        redirectTo: `${origin}/auth/callback` || origin
-      }
-    });
+    setUser({ id: "local-user", email: "player@example.com", user_metadata: { full_name: "Player" } });
+    localStorage.setItem("mock_user_logged_in", "true");
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    setUser(null);
+    localStorage.removeItem("mock_user_logged_in");
   };
 
   return (
