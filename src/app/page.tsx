@@ -14,7 +14,10 @@ import {
   ChevronRight,
   Leaf,
   Zap,
+  Zap,
   Star,
+  Check,
+  Crown,
 } from "lucide-react";
 
 const FEATURES = [
@@ -256,6 +259,68 @@ export default function HomePage() {
               <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ─── Pro Version (Aura Premium) ─── */}
+      <section className="py-24 px-4 max-w-6xl mx-auto">
+        <div className="text-center mb-16 space-y-3">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white">
+            Unlock <span className="gradient-text-garden">Aura Premium</span>
+          </h2>
+          <p className="text-gray-500 max-w-lg mx-auto">
+            Take your cognitive training to the next level with exclusive biomes and limitless AI analysis.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Free Tier */}
+          <div className="p-8 rounded-3xl border border-aura-border bg-aura-card/50 space-y-6">
+            <h3 className="text-2xl font-bold text-white">Seedling (Free)</h3>
+            <p className="text-gray-400 text-sm">Perfect for beginners stepping into the garden.</p>
+            <div className="text-3xl font-bold text-white mt-4">$0 <span className="text-lg text-gray-500 font-normal">/ forever</span></div>
+            <ul className="space-y-4 mt-8">
+              {[
+                "Basic AI Coaching (1 persona)", 
+                "Standard Forest Garden", 
+                "1 Deep Game Analysis per day", 
+                "Standard daily puzzles"
+              ].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-gray-400">
+                  <Check size={16} className="text-gray-500" /> {feature}
+                </li>
+              ))}
+            </ul>
+            <Link href="/game" className="block mt-8">
+              <Button variant="secondary" className="w-full bg-aura-muted/50 hover:bg-aura-muted text-white transition-colors duration-200">Play Free</Button>
+            </Link>
+          </div>
+
+          {/* Pro Tier */}
+          <div className="relative p-8 rounded-3xl border border-garden-400/30 bg-aura-card glass shadow-glow-green space-y-6 overflow-hidden">
+            <div className="absolute top-0 right-0 bg-garden-400/20 text-garden-400 text-xs font-bold px-4 py-2 rounded-bl-xl border-b border-l border-garden-400/30 flex items-center gap-1.5 backdrop-blur-sm">
+              <Crown size={14} /> PRO
+            </div>
+            <h3 className="text-2xl font-bold gradient-text-garden flex items-center gap-2">Grandmaster</h3>
+            <p className="text-gray-400 text-sm">For the dedicated player wanting deeper insights.</p>
+            <div className="text-3xl font-bold text-white mt-4">$9.99 <span className="text-lg text-gray-500 font-normal">/ month</span></div>
+            <ul className="space-y-4 mt-8">
+              {[
+                "Multiple AI Personas (Zen Master, Aggressor)", 
+                "Exclusive Biomes (Zen Garden, Sakura, Cyberpunk)", 
+                "Unlimited Stockfish + Gemini Analysis", 
+                "Puzzles generated from your mistakes",
+                "Advanced Cognitive Analytics Dashboard"
+              ].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
+                  <Check size={16} className="text-garden-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]" /> {feature}
+                </li>
+              ))}
+            </ul>
+            <Link href="/pricing" className="block mt-8">
+              <Button variant="garden" className="w-full">Upgrade to Premium</Button>
+            </Link>
+          </div>
         </div>
       </section>
 
