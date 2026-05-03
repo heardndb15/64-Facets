@@ -25,7 +25,7 @@ import { useUser } from "@/context/UserContext";
 const MILESTONE_LEVELS = [1, 3, 5, 8, 10, 15, 20];
 
 export default function DashboardPage() {
-  const { stats, updateStats, user, loginWithGoogle } = useUser();
+  const { stats, updateStats, user } = useUser();
   const { level, xp, coins, gamesPlayed, wins, username } = stats;
   
   const xpNeeded = xpForLevel(level);
