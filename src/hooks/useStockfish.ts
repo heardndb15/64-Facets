@@ -74,6 +74,7 @@ export function useStockfish(): UseStockfishReturn {
 
       worker.onerror = (err) => {
         console.error("Stockfish worker error:", err);
+        workerRef.current = null;
         setIsReady(true); // Use fallback on error
       };
 
@@ -84,7 +85,10 @@ export function useStockfish(): UseStockfishReturn {
       // Fail-safe timeout if worker hangs or CSP blocks it silently
       setTimeout(() => {
         setIsReady((prev) => {
-          if (!prev) console.warn("Stockfish initialization timed out. Using mock.");
+          if (!prev) {
+            console.warn("Stockfish initialization timed out. Using mock.");
+            workerRef.current = null;
+          }
           return true;
         });
       }, 3000);
