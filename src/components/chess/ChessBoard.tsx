@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { useChessGame } from "@/hooks/useChessGame";
+import { useRealtimeMatch } from "@/hooks/useRealtimeMatch";
 import { GameResult } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -22,13 +23,25 @@ interface ChessBoardProps {
   onGameEnd: (pgn: string, result: GameResult) => void;
   playAgainstAI?: boolean;
   engineMoveFetcher?: (fen: string, depth?: number) => Promise<string | null>;
+  matchId?: string | null;
 }
 
 /**
  * Interactive chess board component.
  * Wraps react-chessboard with our game hook, move history, and controls.
  */
-export function ChessBoardComponent({ onGameEnd, playAgainstAI = false, engineMoveFetcher }: ChessBoardProps) {
+export function ChessBoardComponent({ onGameEnd, playAgainstAI = false, engineMoveFetcher, matchId }: ChessBoardProps) {
+  // We need to declare makeMove usage carefully
+  // So we pass a callback that uses makeMove, but makeMove comes from useChessGame...
+  // Luckily sendMove from useRealtimeMatch doesn't depend on makeMove.
+  
+  const { sendMove, status } = useRealtimeMatch({
+    matchId: matchId || null,
+    onReceiveMove: (from, to, promotion) => {
+      makeMoveRef.current?.(from, to, promotion, true);
+    },
+  });
+
   const {
     gameState,
     makeMove,
@@ -37,7 +50,12 @@ export function ChessBoardComponent({ onGameEnd, playAgainstAI = false, engineMo
     highlightedSquares,
     onSquareClick,
     selectedSquare,
-  } = useChessGame(playAgainstAI, engineMoveFetcher);
+  } = useChessGame(playAgainstAI, engineMoveFetcher, sendMove);
+
+  // Store makeMove in a ref to avoid dependency cycle in useRealtimeMatch
+  const makeMoveRef = React.useRef(makeMove);
+  React.useEffect(() => { makeMoveRef.current = makeMove; }, [makeMove]);
+
 
   const [hasNotifiedEnd, setHasNotifiedEnd] = useState(false);
 
@@ -97,6 +115,11 @@ export function ChessBoardComponent({ onGameEnd, playAgainstAI = false, engineMo
         )}
 
         {/* Board wrapper */}
+        {status === "connecting" && (
+          <div className="mb-4 text-xs text-bloom-pink font-semibold animate-pulse border border-bloom-pink/20 bg-bloom-pink/10 px-3 py-2 rounded-xl inline-block">
+            Connecting to opponent...
+          </div>
+        )}
         <div className="chess-wrapper w-full max-w-[520px] mx-auto lg:mx-0">
           <Chessboard
             id="aura-chess-board"

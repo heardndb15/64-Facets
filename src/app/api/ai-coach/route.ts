@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/ai-coach
  * Body: { pgn, blunders, mistakes, inaccuracies, accuracy, result }

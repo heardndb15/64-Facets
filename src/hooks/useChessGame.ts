@@ -6,7 +6,7 @@ import { GameResult, GameState } from "@/lib/types";
 
 interface UseChessGameReturn {
   gameState: GameState;
-  makeMove: (from: string, to: string, promotion?: string) => boolean;
+  makeMove: (from: string, to: string, promotion?: string, isRemote?: boolean) => boolean;
   makeAIMove: () => void;
   resetGame: () => void;
   resignGame: () => void;
@@ -23,7 +23,8 @@ const INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
  */
 export function useChessGame(
   playAgainstAI: boolean = false,
-  engineMoveFetcher?: (fen: string, depth?: number) => Promise<string | null>
+  engineMoveFetcher?: (fen: string, depth?: number) => Promise<string | null>,
+  onLocalMove?: (from: string, to: string, promotion?: string) => void
 ): UseChessGameReturn {
   const chessRef = useRef(new Chess());
   const [gameState, setGameState] = useState<GameState>({
@@ -70,7 +71,7 @@ export function useChessGame(
    * Returns true if the move was legal.
    */
   const makeMove = useCallback(
-    (from: string, to: string, promotion = "q"): boolean => {
+    (from: string, to: string, promotion = "q", isRemote = false): boolean => {
       const chess = chessRef.current;
       if (chess.isGameOver()) return false;
 
@@ -80,12 +81,13 @@ export function useChessGame(
         setSelectedSquare(null);
         setHighlightedSquares({});
         syncState();
+        if (onLocalMove && !isRemote) onLocalMove(from, to, promotion);
         return true;
       } catch {
         return false;
       }
     },
-    [syncState]
+    [syncState, onLocalMove]
   );
 
   /**

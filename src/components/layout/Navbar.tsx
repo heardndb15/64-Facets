@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { GardenMini } from "@/components/garden/GardenDisplay";
 import { XPBar } from "@/components/ui/progress-bars";
-import { Sword, LayoutDashboard, History, Settings } from "lucide-react";
+import { Sword, LayoutDashboard, History, Settings, Crown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { useUser } from "@/context/UserContext";
+import { ProModal } from "@/components/ui/pro-modal";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export function Navbar() {
   const { level, xp, username } = stats;
   // Fallback next level calc for navbar display
   const xpToNextLevel = level * 100;
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
 
   const navLinks = [
     { href: "/game", label: "Play", icon: Sword },
@@ -76,6 +78,14 @@ export function Navbar() {
               <span className="text-sm font-medium text-white hidden sm:block">{username}</span>
             </div>
 
+            {/* Pro Button */}
+            <button 
+              onClick={() => setIsProModalOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 ml-1 text-xs font-bold text-white bg-gradient-to-r from-garden-500 to-garden-400 hover:from-garden-400 hover:to-garden-300 rounded-lg shadow-glow-green transition-all"
+            >
+              <Crown size={14} /> PRO
+            </button>
+
             {/* Auth Button */}
             {user ? (
               <button onClick={logout} className="text-xs ml-2 text-gray-400 hover:text-white">
@@ -92,6 +102,7 @@ export function Navbar() {
           </div>
         </div>
       </div>
+      <ProModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
     </nav>
   );
 }

@@ -14,7 +14,6 @@ import {
   ChevronRight,
   Leaf,
   Zap,
-  Zap,
   Star,
   Check,
   Crown,

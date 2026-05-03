@@ -3,6 +3,8 @@ import { supabase } from "@/lib/supabase";
 import { applyXPGain, calculateXPGain } from "@/lib/game-utils";
 import { AnalysisResult, GameResult } from "@/lib/types";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/save-game
  * Saves a completed game + analysis to Supabase and updates player XP/level.

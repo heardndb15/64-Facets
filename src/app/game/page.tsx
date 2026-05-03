@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { ChessBoardComponent } from "@/components/chess/ChessBoard";
 import { GameAnalysis } from "@/components/chess/GameAnalysis";
@@ -10,11 +10,11 @@ import { useStockfish } from "@/hooks/useStockfish";
 import { buildPlayerStats, calculateXPGain, applyXPGain, xpForLevel } from "@/lib/game-utils";
 import { AnalysisResult, GameResult, XPGain } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Cpu, Users, ChevronLeft, FlaskConical } from "lucide-react";
+import { Cpu, Users, ChevronLeft, FlaskConical, Link2, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/context/UserContext";
 
-type GameMode = "vs-ai" | "vs-human";
+type GameMode = "vs-ai" | "vs-human" | "vs-online";
 type ViewMode = "setup" | "game" | "analysis";
 
 /**
@@ -24,6 +24,7 @@ type ViewMode = "setup" | "game" | "analysis";
 export default function GamePage() {
   const [gameMode, setGameMode] = useState<GameMode>("vs-ai");
   const [view, setView] = useState<ViewMode>("setup");
+  const [matchId, setMatchId] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [xpToast, setXpToast] = useState<{ xpGain: XPGain; newLevel: number; leveledUp: boolean } | null>(null);
 
@@ -37,6 +38,18 @@ export default function GamePage() {
     stats.gamesPlayed,
     stats.wins
   );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const mId = searchParams.get("match");
+      if (mId) {
+        setMatchId(mId);
+        setGameMode("vs-online");
+        setView("game");
+      }
+    }
+  }, []);
 
   /**
    * Called when a game ends. Triggers Stockfish analysis then shows analysis view.
@@ -81,7 +94,23 @@ export default function GamePage() {
 
   const handleBackToSetup = () => {
     setAnalysis(null);
+    setMatchId(null);
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
     setView("setup");
+  };
+
+  const handleStartGame = (mode: GameMode) => {
+    setGameMode(mode);
+    if (mode === "vs-online") {
+      const newMatchId = Math.random().toString(36).substring(2, 10);
+      setMatchId(newMatchId);
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(null, "", `?match=${newMatchId}`);
+      }
+    }
+    setView("game");
   };
 
   return (
@@ -94,7 +123,7 @@ export default function GamePage() {
           <SetupScreen
             gameMode={gameMode}
             onModeChange={setGameMode}
-            onStart={() => setView("game")}
+            onStart={() => handleStartGame(gameMode)}
             isEngineReady={isReady}
             playerStats={playerStats}
           />
@@ -120,19 +149,28 @@ export default function GamePage() {
                       <Cpu size={13} className="text-garden-400" />
                       vs. AI Opponent
                     </span>
-                  ) : (
+                  ) : gameMode === "vs-human" ? (
                     <span className="flex items-center gap-1.5">
                       <Users size={13} className="text-bloom-pink" />
                       Two Players (Local)
                     </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-blue-400">
+                      <Link2 size={13} />
+                      Online Match
+                    </span>
                   )}
                 </span>
+                {gameMode === "vs-online" && matchId && (
+                  <ShareLinkButton matchId={matchId} />
+                )}
               </div>
 
               <ChessBoardComponent
                 onGameEnd={handleGameEnd}
                 playAgainstAI={gameMode === "vs-ai"}
                 engineMoveFetcher={getBestMove}
+                matchId={gameMode === "vs-online" ? matchId : null}
               />
             </div>
 
@@ -211,14 +249,14 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
       </div>
 
       {/* Mode selector */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           {
             id: "vs-ai" as GameMode,
             icon: <Cpu size={28} className="text-garden-400" />,
             title: "vs. AI",
             desc: "Practice against a simple computer opponent.",
-            tag: "Good for solo training",
+            tag: "Solo training",
           },
           {
             id: "vs-human" as GameMode,
@@ -226,6 +264,13 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
             title: "vs. Friend",
             desc: "Pass and play locally with another person.",
             tag: "Same device",
+          },
+          {
+            id: "vs-online" as GameMode,
+            icon: <Link2 size={28} className="text-blue-400" />,
+            title: "Play Online",
+            desc: "Generate link & play peer-to-peer via Network.",
+            tag: "Remote play",
           },
         ].map((mode) => (
           <button
@@ -269,12 +314,38 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
         {isEngineReady ? (
           <>
             <ChevronLeft size={0} />
-            {gameMode === "vs-ai" ? "Play vs AI" : "Start Local Game"}
+            {gameMode === "vs-ai" ? "Play vs AI" : gameMode === "vs-human" ? "Start Local Game" : "Create Link & Play"}
           </>
         ) : (
           "Loading Engine..."
         )}
       </Button>
     </div>
+  );
+}
+
+function ShareLinkButton({ matchId }: { matchId: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = () => {
+    const link = `${window.location.origin}/game?match=${matchId}`;
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={copyLink}
+      className={cn(
+        "ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors",
+        copied
+          ? "bg-garden-400/20 text-garden-400 border-garden-400/30"
+          : "bg-aura-card text-gray-400 border-aura-border hover:text-white"
+      )}
+    >
+      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? "Copied!" : "Copy Invite Link"}
+    </button>
   );
 }
