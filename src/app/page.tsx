@@ -123,19 +123,19 @@ export default function HomePage() {
 
           {/* CTA buttons */}
           <div className="flex items-center justify-center flex-wrap gap-4">
-            <Link href="/game">
-              <Button variant="primary" size="lg">
+            <Button variant="primary" size="lg" asChild>
+              <Link href="/game">
                 <Sword size={18} />
                 Start Playing
                 <ArrowRight size={16} />
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="secondary" size="lg">
+              </Link>
+            </Button>
+            <Button variant="secondary" size="lg" asChild>
+              <Link href="/dashboard">
                 <Leaf size={18} />
                 My Garden
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
 
           {/* Mini chess icon row */}
@@ -290,9 +290,11 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-            <Link href="/game" className="block mt-8">
-              <Button variant="secondary" className="w-full bg-aura-muted/50 hover:bg-aura-muted text-white transition-colors duration-200">Play Free</Button>
-            </Link>
+            <div className="mt-8">
+              <Button variant="secondary" className="w-full bg-aura-muted/50 hover:bg-aura-muted text-white transition-colors duration-200" asChild>
+                <Link href="/game" className="block w-full">Play Free</Link>
+              </Button>
+            </div>
           </div>
 
           {/* Pro Tier */}
@@ -316,9 +318,11 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-            <Link href="/pricing" className="block mt-8">
-              <Button variant="garden" className="w-full">Upgrade to Premium</Button>
-            </Link>
+            <div className="mt-8">
+              <Button variant="garden" className="w-full" asChild>
+                <Link href="/pricing" className="block w-full">Upgrade to Premium</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -338,13 +342,13 @@ export default function HomePage() {
           <p className="text-gray-400 text-lg">
             Plant your first game. Your garden is waiting.
           </p>
-          <Link href="/game">
-            <Button variant="garden" size="lg">
+          <Button variant="garden" size="lg" asChild>
+            <Link href="/game">
               <Leaf size={18} />
               Begin Your Journey
               <ChevronRight size={16} />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </section>
 
