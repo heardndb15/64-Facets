@@ -42,16 +42,16 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-display font-bold gradient-text-garden">
-              Your Garden
+              Ваш Сад
             </h1>
             <p className="text-gray-500 mt-1 text-sm">
-              A living reflection of your strategic mind.
+              Живое отражение вашего стратегического ума.
             </p>
           </div>
           <Link href="/game">
             <Button variant="primary">
               <Sword size={16} />
-              Play Now
+              Играть
               <ChevronRight size={14} />
             </Button>
           </Link>
@@ -66,13 +66,13 @@ export default function DashboardPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-white">{username}&apos;s Garden</p>
+                    <p className="text-sm font-semibold text-aura-fg">Сад пользователя {username}</p>
                     <p className="text-xs text-gray-500 mt-0.5" style={{ color: stageInfo.color }}>
-                      ✦ {stageInfo.label} Stage
+                      ✦ Стадия: {stageInfo.label}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-600 border border-aura-border px-3 py-1 rounded-full">
-                    Level {level}
+                  <span className="text-xs text-gray-500 border border-aura-border px-3 py-1 rounded-full">
+                    Уровень {level}
                   </span>
                 </div>
 
@@ -87,10 +87,10 @@ export default function DashboardPage() {
             {/* XP Progress */}
             <Card>
               <CardContent className="space-y-4">
-                <CardTitle>Experience Progress</CardTitle>
+                <CardTitle>Прогресс опыта</CardTitle>
                 <XPBar xp={xp} xpToNextLevel={xpNeeded} level={level} showLabel />
-                <p className="text-xs text-gray-600">
-                  {xpNeeded - xp} XP until Level {level + 1}
+                <p className="text-xs text-gray-500">
+                  {xpNeeded - xp} XP до {level + 1} уровня
                 </p>
               </CardContent>
             </Card>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
             {/* Level milestones */}
             <Card>
               <CardContent className="space-y-4">
-                <CardTitle>Milestones</CardTitle>
+                <CardTitle>Этапы сада</CardTitle>
                 <div className="relative">
                   {/* Timeline line */}
                   <div className="absolute left-4 top-0 bottom-0 w-px bg-aura-border" />
@@ -129,10 +129,10 @@ export default function DashboardPage() {
                           />
                           <span className="text-lg">{mlInfo.emoji.split("")[0]}</span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white">
-                              Level {mlvl} — {mlInfo.label}
+                            <p className="text-sm font-medium text-aura-fg">
+                              Уровень {mlvl} — {mlInfo.label}
                             </p>
-                            <p className="text-xs text-gray-600 truncate">{mlInfo.description}</p>
+                            <p className="text-xs text-gray-500 truncate">{mlInfo.description}</p>
                           </div>
                           {done && (
                             <Star size={12} className="text-bloom-sun shrink-0" />
@@ -155,8 +155,8 @@ export default function DashboardPage() {
                   <Coins size={22} className="text-bloom-sun" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{coins.toLocaleString()}</p>
-                  <p className="text-xs text-gray-500">Garden Coins</p>
+                  <p className="text-2xl font-bold text-aura-fg">{coins.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500">Монет Сада</p>
                 </div>
               </CardContent>
             </Card>
@@ -166,25 +166,25 @@ export default function DashboardPage() {
               {
                 icon: <Trophy size={18} className="text-bloom-sun" />,
                 value: wins,
-                label: "Total Wins",
+                label: "Побед",
                 bg: "bg-bloom-sun/10",
               },
               {
                 icon: <Sword size={18} className="text-bloom-pink" />,
                 value: gamesPlayed,
-                label: "Games Played",
+                label: "Сыграно",
                 bg: "bg-bloom-pink/10",
               },
               {
                 icon: <TrendingUp size={18} className="text-garden-400" />,
                 value: `${winRate}%`,
-                label: "Win Rate",
+                label: "Процент побед",
                 bg: "bg-garden-400/10",
               },
               {
                 icon: <Shield size={18} className="text-bloom-lavender" />,
                 value: level,
-                label: "Current Level",
+                label: "Уровень",
                 bg: "bg-bloom-lavender/10",
               },
             ].map((stat, i) => (
@@ -194,7 +194,7 @@ export default function DashboardPage() {
                     {stat.icon}
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xl font-bold text-aura-fg">{stat.value}</p>
                     <p className="text-xs text-gray-500">{stat.label}</p>
                   </div>
                 </CardContent>
@@ -205,10 +205,10 @@ export default function DashboardPage() {
             <Card variant="garden">
               <CardContent className="space-y-2">
                 <Leaf size={16} className="text-garden-400" />
-                <p className="text-sm text-gray-300 italic leading-relaxed">
-                  &ldquo;Every piece you move is a thought you plant. Tend your garden carefully.&rdquo;
+                <p className="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed">
+                  &ldquo;Каждая фигура, которой вы ходите — это посаженная мысль. Тщательно ухаживайте за своим садом.&rdquo;
                 </p>
-                <p className="text-xs text-gray-600">— Aura Chess</p>
+                <p className="text-xs text-gray-500">— Aura Chess</p>
               </CardContent>
             </Card>
           </div>

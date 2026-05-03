@@ -22,35 +22,35 @@ import {
 const FEATURES = [
   {
     icon: <Sword size={22} className="text-garden-400" />,
-    title: "Live Chess Arena",
-    desc: "Play fully validated chess with smooth drag-and-drop. Legal moves only — powered by chess.js.",
+    title: "Живая Шахматная Арена",
+    desc: "Играйте в полностью валидируемые шахматы с плавным управлением. Только легальные ходы — работает на chess.js.",
     glow: "glow-green",
   },
   {
     icon: <Brain size={22} className="text-bloom-lavender" />,
-    title: "AI Coach (Gemini)",
-    desc: "After each game, Gemini turns Stockfish data into human metaphors: 'You lost the center like a garden without roots.'",
+    title: "ИИ-Тренер (Gemini)",
+    desc: "После каждой партии Gemini превращает данные Stockfish в понятные метафоры: 'Вы потеряли центр, как сад без корней.'",
     glow: "glow-purple",
   },
   {
     icon: <TrendingUp size={22} className="text-bloom-pink" />,
-    title: "RPG Progression",
-    desc: "Earn XP, level up, and watch your digital garden evolve from a seed to an ancient mythical tree.",
+    title: "RPG Прогрессия",
+    desc: "Зарабатывайте опыт, повышайте уровень и наблюдайте, как ваш цифровой сад эволюционирует от семечка до древнего мифического древа.",
     glow: "glow-pink",
   },
   {
     icon: <Zap size={22} className="text-bloom-sun" />,
-    title: "Deep Analysis",
-    desc: "Every blunder and mistake detected by Stockfish, ranked by severity, with move-by-move review.",
+    title: "Глубокий Анализ",
+    desc: "Каждый зевок и ошибка обнаруживаются Stockfish, сортируются по серьезности, с пошаговым разбором.",
     glow: "",
   },
 ];
 
 const GARDEN_STAGES = [
-  { level: 1, emoji: "🌱", label: "Seed", desc: "Your first steps" },
-  { level: 5, emoji: "🌸", label: "Bloom", desc: "Growing patterns" },
-  { level: 10, emoji: "🌲", label: "Tree", desc: "Deep roots" },
-  { level: 16, emoji: "✨🌳", label: "Mythic", desc: "Legendary" },
+  { level: 1, emoji: "🌱", label: "Семя", desc: "Ваши первые шаги" },
+  { level: 5, emoji: "🌸", label: "Цветок", desc: "Растущие узоры" },
+  { level: 10, emoji: "🌲", label: "Дерево", desc: "Глубокие корни" },
+  { level: 16, emoji: "✨🌳", label: "Миф", desc: "Легендарность" },
 ];
 
 export default function HomePage() {
@@ -95,30 +95,30 @@ export default function HomePage() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-garden-400/20 text-xs font-medium text-garden-400">
             <Sparkles size={12} />
-            AI-Powered Chess Training Platform
+            Платформа Тренировки на базе ИИ
             <Sparkles size={12} />
           </div>
 
           {/* Headline */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-bold leading-tight tracking-tight">
-            <span className="text-white">Aura</span>
+            <span className="text-aura-fg">Aura</span>
             {" "}
             <span className="gradient-text-garden">Chess</span>
             <br />
-            <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-400 font-normal italic">
-              The Garden of Strategy
+            <span className="text-3xl sm:text-4xl lg:text-5xl text-gray-500 font-normal italic">
+              Сад Стратегий
             </span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Every match is a{" "}
-            <span className="text-garden-400">thinking session</span>.
-            Every mistake is a{" "}
-            <span className="text-bloom-pink">lesson</span>.
-            Watch your mind{" "}
-            <span className="text-bloom-lavender">bloom</span>{" "}
-            into a garden of mastery.
+          <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            Каждая партия — это{" "}
+            <span className="text-garden-500 dark:text-garden-400">сессия размышлений</span>.
+            Каждая ошибка — это{" "}
+            <span className="text-bloom-rose dark:text-bloom-pink">урок</span>.
+            Наблюдайте, как ваш разум{" "}
+            <span className="text-bloom-purple dark:text-bloom-lavender">расцветает</span>{" "}
+            в сад мастерства.
           </p>
 
           {/* CTA buttons */}
@@ -126,14 +126,14 @@ export default function HomePage() {
             <Button variant="primary" size="lg" asChild>
               <Link href="/game">
                 <Sword size={18} />
-                Start Playing
+                Начать Игру
                 <ArrowRight size={16} />
               </Link>
             </Button>
             <Button variant="secondary" size="lg" asChild>
               <Link href="/dashboard">
                 <Leaf size={18} />
-                My Garden
+                Мой Сад
               </Link>
             </Button>
           </div>
@@ -157,10 +157,10 @@ export default function HomePage() {
       <section className="py-24 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-16 space-y-3">
           <h2 className="text-3xl sm:text-4xl font-display font-bold gradient-text-aura">
-            More Than Chess
+            Больше, чем просто шахматы
           </h2>
           <p className="text-gray-500 max-w-lg mx-auto">
-            A cognitive training system that gamifies every move you make.
+            Система когнитивной тренировки, геймифицирующая каждый ваш ход.
           </p>
         </div>
 
@@ -171,7 +171,7 @@ export default function HomePage() {
                 <div className="w-11 h-11 rounded-xl bg-aura-muted flex items-center justify-center">
                   {f.icon}
                 </div>
-                <h3 className="font-semibold text-white text-sm">{f.title}</h3>
+                <h3 className="font-semibold text-aura-fg text-sm">{f.title}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed">{f.desc}</p>
               </CardContent>
             </Card>
@@ -182,11 +182,11 @@ export default function HomePage() {
       {/* ─── Garden Progression ─── */}
       <section className="py-24 px-4 max-w-5xl mx-auto">
         <div className="text-center mb-16 space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white">
-            Watch Your Garden <span className="gradient-text-garden">Grow</span>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-aura-fg">
+            Наблюдайте, как <span className="gradient-text-garden">растет</span> ваш сад
           </h2>
           <p className="text-gray-500 max-w-lg mx-auto">
-            Your level reflects your growth. From a tiny seed to an ancient tree of wisdom.
+            Ваш уровень отражает ваш рост. От крошечного семечка до древнего древа мудрости.
           </p>
         </div>
 
@@ -196,8 +196,8 @@ export default function HomePage() {
               <CardContent className="space-y-3">
                 <span className="text-4xl select-none block">{stage.emoji}</span>
                 <div>
-                  <p className="font-bold text-white text-sm">{stage.label}</p>
-                  <p className="text-xs text-gray-500">Lv. {stage.level}+</p>
+                  <p className="font-bold text-aura-fg text-sm">{stage.label}</p>
+                  <p className="text-xs text-gray-500">Ур. {stage.level}+</p>
                   <p className="text-xs text-gray-600 mt-1">{stage.desc}</p>
                 </div>
               </CardContent>
@@ -207,8 +207,8 @@ export default function HomePage() {
 
         {/* Live garden preview */}
         <div className="mt-10 max-w-sm mx-auto space-y-3">
-          <p className="text-center text-xs text-gray-600 uppercase tracking-widest">
-            Preview — Level 10 Garden
+          <p className="text-center text-xs text-gray-500 uppercase tracking-widest">
+            Предпросмотр — Сад 10 уровня
           </p>
           <GardenScene level={10} />
         </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
       {/* ─── How it works ─── */}
       <section className="py-24 px-4 max-w-4xl mx-auto">
         <div className="text-center mb-16 space-y-3">
-          <h2 className="text-3xl font-display font-bold text-white">How It Works</h2>
+          <h2 className="text-3xl font-display font-bold text-aura-fg">Как это работает</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -225,36 +225,36 @@ export default function HomePage() {
             {
               step: "01",
               icon: <Sword size={20} className="text-garden-400" />,
-              title: "Play a Game",
-              desc: "Challenge the AI or a friend. Every move is tracked.",
+              title: "Сыграйте партию",
+              desc: "Бросьте вызов ИИ или другу. Каждый ход отслеживается.",
               color: "text-garden-400",
               border: "border-garden-400/20",
             },
             {
               step: "02",
               icon: <Brain size={20} className="text-bloom-lavender" />,
-              title: "Get Analyzed",
-              desc: "Stockfish evaluates every position. Gemini translates it into plain English.",
+              title: "Получите анализ",
+              desc: "Stockfish оценивает позицию. Gemini переводит это на понятный язык.",
               color: "text-bloom-lavender",
               border: "border-bloom-lavender/20",
             },
             {
               step: "03",
               icon: <Star size={20} className="text-bloom-sun" />,
-              title: "Grow & Level Up",
-              desc: "Earn XP, grow your garden, and build your inner grandmaster.",
+              title: "Растите и улучшайтесь",
+              desc: "Зарабатывайте опыт, растите свой сад и становитесь гроссмейстером.",
               color: "text-bloom-sun",
               border: "border-bloom-sun/20",
             },
           ].map((item) => (
             <div key={item.step} className={`relative p-6 rounded-2xl border ${item.border} bg-aura-card space-y-4`}>
               <span className={`text-xs font-bold uppercase tracking-widest ${item.color} opacity-60`}>
-                Step {item.step}
+                Шаг {item.step}
               </span>
               <div className={`w-10 h-10 rounded-xl bg-aura-muted flex items-center justify-center`}>
                 {item.icon}
               </div>
-              <h3 className="font-semibold text-white">{item.title}</h3>
+              <h3 className="font-semibold text-aura-fg">{item.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -264,35 +264,35 @@ export default function HomePage() {
       {/* ─── Pro Version (Aura Premium) ─── */}
       <section className="py-24 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-16 space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white">
-            Unlock <span className="gradient-text-garden">Aura Premium</span>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-aura-fg">
+            Откройте <span className="gradient-text-garden">Aura Premium</span>
           </h2>
           <p className="text-gray-500 max-w-lg mx-auto">
-            Take your cognitive training to the next level with exclusive biomes and limitless AI analysis.
+            Поднимите тренировки на новый уровень с эксклюзивными биомами и безлимитным ИИ анализом.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Free Tier */}
           <div className="p-8 rounded-3xl border border-aura-border bg-aura-card/50 space-y-6">
-            <h3 className="text-2xl font-bold text-white">Seedling (Free)</h3>
-            <p className="text-gray-400 text-sm">Perfect for beginners stepping into the garden.</p>
-            <div className="text-3xl font-bold text-white mt-4">$0 <span className="text-lg text-gray-500 font-normal">/ forever</span></div>
+            <h3 className="text-2xl font-bold text-aura-fg">Росток (Бесплатно)</h3>
+            <p className="text-gray-500 text-sm">Идеально для новичков, делающих первые шаги.</p>
+            <div className="text-3xl font-bold text-aura-fg mt-4">$0 <span className="text-lg text-gray-500 font-normal">/ навсегда</span></div>
             <ul className="space-y-4 mt-8">
               {[
-                "Basic AI Coaching (1 persona)", 
-                "Standard Forest Garden", 
-                "1 Deep Game Analysis per day", 
-                "Standard daily puzzles"
+                "Базовый ИИ-тренер (1 персонаж)", 
+                "Стандартный лесной сад", 
+                "1 глубокий анализ игры в день", 
+                "Стандартные ежедневные задачи"
               ].map((feature, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-gray-400">
-                  <Check size={16} className="text-gray-500" /> {feature}
+                <li key={i} className="flex items-center gap-3 text-sm text-gray-500">
+                  <Check size={16} className="text-gray-400" /> {feature}
                 </li>
               ))}
             </ul>
             <div className="mt-8">
-              <Button variant="secondary" className="w-full bg-aura-muted/50 hover:bg-aura-muted text-white transition-colors duration-200" asChild>
-                <Link href="/game" className="block w-full">Play Free</Link>
+              <Button variant="secondary" className="w-full bg-aura-muted/50 hover:bg-aura-muted text-aura-fg transition-colors duration-200" asChild>
+                <Link href="/game" className="block w-full">Играть бесплатно</Link>
               </Button>
             </div>
           </div>
@@ -302,16 +302,16 @@ export default function HomePage() {
             <div className="absolute top-0 right-0 bg-garden-400/20 text-garden-400 text-xs font-bold px-4 py-2 rounded-bl-xl border-b border-l border-garden-400/30 flex items-center gap-1.5 backdrop-blur-sm">
               <Crown size={14} /> PRO
             </div>
-            <h3 className="text-2xl font-bold gradient-text-garden flex items-center gap-2">Grandmaster</h3>
-            <p className="text-gray-400 text-sm">For the dedicated player wanting deeper insights.</p>
-            <div className="text-3xl font-bold text-white mt-4">$9.99 <span className="text-lg text-gray-500 font-normal">/ month</span></div>
+            <h3 className="text-2xl font-bold gradient-text-garden flex items-center gap-2">Гроссмейстер</h3>
+            <p className="text-gray-400 text-sm">Для преданных игроков, желающих глубоких инсайтов.</p>
+            <div className="text-3xl font-bold text-aura-fg mt-4">$9.99 <span className="text-lg text-gray-500 font-normal">/ месяц</span></div>
             <ul className="space-y-4 mt-8">
               {[
-                "Multiple AI Personas (Zen Master, Aggressor)", 
-                "Exclusive Biomes (Zen Garden, Sakura, Cyberpunk)", 
-                "Unlimited Stockfish + Gemini Analysis", 
-                "Puzzles generated from your mistakes",
-                "Advanced Cognitive Analytics Dashboard"
+                "Несколько ИИ-персонажей (Дзен-мастер, Агрессор)", 
+                "Эксклюзивные биомы (Дзен-сад, Сакура, Киберпанк)", 
+                "Безлимитный анализ Stockfish + Gemini", 
+                "Задачи на основе ваших ошибок",
+                "Продвинутая аналитика"
               ].map((feature, i) => (
                 <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
                   <Check size={16} className="text-garden-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]" /> {feature}
@@ -320,7 +320,7 @@ export default function HomePage() {
             </ul>
             <div className="mt-8">
               <Button variant="garden" className="w-full" asChild>
-                <Link href="/pricing" className="block w-full">Upgrade to Premium</Link>
+                <Link href="/pricing" className="block w-full">Улучшить до Premium</Link>
               </Button>
             </div>
           </div>
@@ -336,16 +336,16 @@ export default function HomePage() {
             border: "1px solid rgba(74,222,128,0.15)",
           }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-white">
-            Ready to grow?
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-aura-fg">
+            Готовы расти?
           </h2>
-          <p className="text-gray-400 text-lg">
-            Plant your first game. Your garden is waiting.
+          <p className="text-gray-500 text-lg">
+            Посадите вашу первую игру. Сад ждет.
           </p>
           <Button variant="garden" size="lg" asChild>
             <Link href="/game">
               <Leaf size={18} />
-              Begin Your Journey
+              Начать Путешествие
               <ChevronRight size={16} />
             </Link>
           </Button>
@@ -353,9 +353,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-aura-border py-8 px-4 text-center text-gray-700 text-xs">
-        <p>Aura Chess — The Garden of Strategy &copy; {new Date().getFullYear()}</p>
-        <p className="mt-1">Built with Next.js · chess.js · Stockfish · Gemini AI</p>
+      <footer className="border-t border-aura-border py-8 px-4 text-center text-gray-500 text-xs">
+        <p>Aura Chess — Сад Стратегий &copy; {new Date().getFullYear()}</p>
+        <p className="mt-1">Создано с Next.js · chess.js · Stockfish · Gemini AI</p>
       </footer>
     </main>
   );

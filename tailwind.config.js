@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -31,10 +32,11 @@ module.exports = {
           sun: "#fde68a",
         },
         aura: {
-          bg: "#0f1117",
-          card: "#161b25",
-          border: "#1e2736",
-          muted: "#2a3441",
+          bg: "var(--bg-primary)",
+          card: "var(--bg-card)",
+          border: "var(--bg-border)",
+          muted: "var(--bg-muted)",
+          fg: "var(--text-primary)",
         },
       },
       backgroundImage: {

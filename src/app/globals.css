@@ -5,11 +5,25 @@
 @tailwind utilities;
 
 :root {
+  --bg-primary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-border: #e2e8f0;
+  --bg-muted: #f1f5f9;
+  --text-primary: #0f1117;
+  --text-muted: #64748b;
+  --accent-green: #22c55e;
+  --accent-pink: #ec4899;
+  --accent-purple: #8b5cf6;
+  --accent-sun: #eab308;
+}
+
+.dark {
   --bg-primary: #0f1117;
   --bg-card: #161b25;
   --bg-border: #1e2736;
-  --text-primary: #e8eaf0;
-  --text-muted: #7a8fa6;
+  --bg-muted: #2a3441;
+  --text-primary: #ffffff;
+  --text-muted: #9ca3af;
   --accent-green: #4ade80;
   --accent-pink: #f9a8d4;
   --accent-purple: #c4b5fd;
@@ -51,10 +65,10 @@ body {
 
 /* Glass morphism utility */
 .glass {
-  background: rgba(22, 27, 37, 0.7);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(30, 39, 54, 0.8);
+  border: 1px solid var(--bg-border);
 }
 
 .glass-light {

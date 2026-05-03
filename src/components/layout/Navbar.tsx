@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { GardenMini } from "@/components/garden/GardenDisplay";
 import { XPBar } from "@/components/ui/progress-bars";
-import { Sword, LayoutDashboard, History, Settings, Crown } from "lucide-react";
+import { Sword, LayoutDashboard, History, Settings, Crown, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 import { useUser } from "@/context/UserContext";
@@ -18,11 +19,12 @@ export function Navbar() {
   // Fallback next level calc for navbar display
   const xpToNextLevel = level * 100;
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   const navLinks = [
-    { href: "/game", label: "Play", icon: Sword },
-    { href: "/dashboard", label: "Garden", icon: LayoutDashboard },
-    { href: "/history", label: "History", icon: History },
+    { href: "/game", label: "Играть", icon: Sword },
+    { href: "/dashboard", label: "Сад", icon: LayoutDashboard },
+    { href: "/history", label: "История", icon: History },
   ];
 
   return (
@@ -32,7 +34,7 @@ export function Navbar() {
           {/* Brand */}
           <Link href="/" className="flex items-center gap-2 group">
             <span className="text-xl" aria-hidden>♟️</span>
-            <span className="font-display font-bold text-white group-hover:gradient-text-garden transition-all duration-300 text-lg hidden sm:block">
+            <span className="font-display font-bold text-aura-fg group-hover:gradient-text-garden transition-all duration-300 text-lg hidden sm:block">
               Aura<span className="gradient-text-garden"> Chess</span>
             </span>
           </Link>
@@ -47,7 +49,7 @@ export function Navbar() {
                   "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   pathname === href
                     ? "bg-garden-400/10 text-garden-400 border border-garden-400/20"
-                    : "text-gray-400 hover:text-white hover:bg-aura-muted"
+                    : "text-gray-500 dark:text-gray-400 hover:text-aura-fg hover:bg-aura-muted"
                 )}
               >
                 <Icon size={14} />
@@ -61,8 +63,8 @@ export function Navbar() {
             {/* XP mini bar */}
             <div className="hidden md:flex flex-col gap-1 w-28">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Lv. {level}</span>
-                <span className="text-gray-600">{xp}/{xpToNextLevel}</span>
+                <span className="text-gray-500 font-medium">Ур. {level}</span>
+                <span className="text-gray-600 font-medium">{xp}/{xpToNextLevel}</span>
               </div>
               <div className="h-1.5 bg-aura-muted rounded-full overflow-hidden">
                 <div
@@ -75,8 +77,17 @@ export function Navbar() {
             {/* Garden stage + username */}
             <div className="flex items-center gap-2 bg-aura-card border border-aura-border rounded-xl px-3 py-1.5">
               <GardenMini level={level} />
-              <span className="text-sm font-medium text-white hidden sm:block">{username}</span>
+              <span className="text-sm font-medium text-aura-fg hidden sm:block">{username}</span>
             </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-aura-muted hover:text-aura-fg transition-colors hidden sm:block"
+              title="Переключить тему"
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
 
             {/* Pro Button */}
             <button 
@@ -88,15 +99,15 @@ export function Navbar() {
 
             {/* Auth Button */}
             {user ? (
-              <button onClick={logout} className="text-xs ml-2 text-gray-400 hover:text-white">
-                Log Out
+              <button onClick={logout} className="text-xs ml-2 text-gray-500 dark:text-gray-400 hover:text-aura-fg transition-colors">
+                Выйти
               </button>
             ) : (
               <button 
                 onClick={loginWithGithub} 
-                className="text-xs ml-2 bg-garden-500 hover:bg-garden-400 text-white px-2 py-1 rounded"
+                className="text-xs ml-2 bg-garden-500 hover:bg-garden-400 text-white px-2 py-1 rounded transition-colors"
               >
-                Log In
+                Войти
               </button>
             )}
           </div>

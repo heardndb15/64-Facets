@@ -2,18 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aura Chess — The Garden of Strategy",
+  title: "Aura Chess — Сад Стратегий",
   description:
-    "An AI-powered cognitive training platform that gamifies strategic thinking using chess and RPG mechanics. Train your mind, grow your garden.",
-  keywords: ["chess", "AI", "cognitive training", "RPG", "strategy", "garden"],
+    "Когнитивная платформа на базе ИИ, геймифицирующая стратегическое мышление с помощью шахмат и RPG-механик. Тренируйте ум, растите свой сад.",
+  keywords: ["шахматы", "ИИ", "когнитивные тренировки", "RPG", "стратегия", "сад"],
   openGraph: {
-    title: "Aura Chess — The Garden of Strategy",
-    description: "Train your mind. Grow your garden. Master strategy.",
+    title: "Aura Chess — Сад Стратегий",
+    description: "Тренируйте ум. Растите свой сад. Совершенствуйте стратегию.",
     type: "website",
   },
 };
 
 import { UserProvider } from "@/context/UserContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -21,15 +22,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="antialiased min-h-screen bg-aura-bg text-white">
-        <UserProvider>
-          {children}
-        </UserProvider>
+      <body className="antialiased min-h-screen bg-aura-bg text-white transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <UserProvider>
+            {children}
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

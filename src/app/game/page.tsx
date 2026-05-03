@@ -137,27 +137,27 @@ export default function GamePage() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={handleBackToSetup}
-                  className="text-gray-500 hover:text-white transition-colors flex items-center gap-1 text-sm"
+                  className="text-gray-500 hover:text-aura-fg transition-colors flex items-center gap-1 text-sm"
                 >
                   <ChevronLeft size={16} />
-                  Back
+                  Назад
                 </button>
                 <div className="h-4 w-px bg-aura-border" />
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-gray-500">
                   {gameMode === "vs-ai" ? (
                     <span className="flex items-center gap-1.5">
                       <Cpu size={13} className="text-garden-400" />
-                      vs. AI Opponent
+                      Против ИИ
                     </span>
                   ) : gameMode === "vs-human" ? (
                     <span className="flex items-center gap-1.5">
                       <Users size={13} className="text-bloom-pink" />
-                      Two Players (Local)
+                      Два игрока (Локально)
                     </span>
                   ) : (
                     <span className="flex items-center gap-1.5 text-blue-400">
                       <Link2 size={13} />
-                      Online Match
+                      Сетевой матч
                     </span>
                   )}
                 </span>
@@ -188,7 +188,7 @@ export default function GamePage() {
                 )}
               >
                 <FlaskConical size={12} />
-                Stockfish {isReady ? "ready" : "loading..."}
+                Stockfish {isReady ? "готов" : "загрузка..."}
               </div>
             </div>
           </div>
@@ -243,9 +243,9 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
       {/* Heading */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-display font-bold gradient-text-garden">
-          Ready to Play?
+          Готовы играть?
         </h1>
-        <p className="text-gray-400">Choose your mode and begin your thinking session.</p>
+        <p className="text-gray-500">Выберите режим и начните свою сессию размышлений.</p>
       </div>
 
       {/* Mode selector */}
@@ -254,23 +254,23 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
           {
             id: "vs-ai" as GameMode,
             icon: <Cpu size={28} className="text-garden-400" />,
-            title: "vs. AI",
-            desc: "Practice against a simple computer opponent.",
-            tag: "Solo training",
+            title: "ИИ",
+            desc: "Тренируйтесь против компьютера.",
+            tag: "Соло-тренировка",
           },
           {
             id: "vs-human" as GameMode,
             icon: <Users size={28} className="text-bloom-pink" />,
-            title: "vs. Friend",
-            desc: "Pass and play locally with another person.",
-            tag: "Same device",
+            title: "С другом",
+            desc: "Играйте вдвоем на одном устройстве.",
+            tag: "Одно устройство",
           },
           {
             id: "vs-online" as GameMode,
             icon: <Link2 size={28} className="text-blue-400" />,
-            title: "Play Online",
-            desc: "Generate link & play peer-to-peer via Network.",
-            tag: "Remote play",
+            title: "Сеть",
+            desc: "Сгенерируйте ссылку и играйте по сети.",
+            tag: "Удаленная игра",
           },
         ].map((mode) => (
           <button
@@ -287,15 +287,15 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
               {mode.icon}
               {gameMode === mode.id && (
                 <span className="text-xs text-garden-400 font-medium border border-garden-400/30 px-2 py-0.5 rounded-full">
-                  Selected
+                  Выбрано
                 </span>
               )}
             </div>
             <div>
-              <p className="font-semibold text-white">{mode.title}</p>
+              <p className="font-semibold text-aura-fg">{mode.title}</p>
               <p className="text-sm text-gray-500 mt-0.5">{mode.desc}</p>
             </div>
-            <span className="text-xs text-gray-600">{mode.tag}</span>
+            <span className="text-xs text-gray-400">{mode.tag}</span>
           </button>
         ))}
       </div>
@@ -314,10 +314,10 @@ function SetupScreen({ gameMode, onModeChange, onStart, isEngineReady, playerSta
         {isEngineReady ? (
           <>
             <ChevronLeft size={0} />
-            {gameMode === "vs-ai" ? "Play vs AI" : gameMode === "vs-human" ? "Start Local Game" : "Create Link & Play"}
+            {gameMode === "vs-ai" ? "Играть с ИИ" : gameMode === "vs-human" ? "Начать локальную игру" : "Создать ссылку и играть"}
           </>
         ) : (
-          "Loading Engine..."
+          "Загрузка движка..."
         )}
       </Button>
     </div>
@@ -341,11 +341,11 @@ function ShareLinkButton({ matchId }: { matchId: string }) {
         "ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors",
         copied
           ? "bg-garden-400/20 text-garden-400 border-garden-400/30"
-          : "bg-aura-card text-gray-400 border-aura-border hover:text-white"
+          : "bg-aura-card text-gray-500 border-aura-border hover:text-aura-fg"
       )}
     >
       {copied ? <Check size={14} /> : <Copy size={14} />}
-      {copied ? "Copied!" : "Copy Invite Link"}
+      {copied ? "Скопировано!" : "Скопировать ссылку"}
     </button>
   );
 }
