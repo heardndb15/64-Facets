@@ -71,13 +71,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (data && !error) {
+          const meta = session.user.user_metadata;
+          const extractedUsername = 
+            meta?.full_name || 
+            meta?.name || 
+            meta?.user_name || 
+            session.user.email?.split("@")[0] || 
+            "Player";
+
           setStats({
             level: data.level || 1,
             xp: data.xp || 0,
             coins: data.coins || 0,
             gamesPlayed: data.gamesPlayed || 0,
             wins: data.wins || 0,
-            username: session.user.user_metadata?.custom_claims?.global_name || session.user.email?.split("@")[0] || "Player",
+            username: data.username || extractedUsername,
           });
         }
       } catch (err) {
@@ -141,11 +149,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const loginWithGithub = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'github' });
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    await supabase.auth.signInWithOAuth({ 
+      provider: 'github',
+      options: {
+        redirectTo: `${origin}/auth/callback` || origin
+      }
+    });
   };
 
   const loginWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    await supabase.auth.signInWithOAuth({ 
+      provider: 'google', 
+      options: {
+        redirectTo: `${origin}/auth/callback` || origin
+      }
+    });
   };
 
   const logout = async () => {
